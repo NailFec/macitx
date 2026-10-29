@@ -1,0 +1,11 @@
+patch:
+  __include: rime_ice_suggestion:/
+  "menu/page_size": 9
+  # Caps Lock is handled by keyd and fcitx. Keep it a real caps lock inside Rime,
+  # and ignore Shift/Ctrl taps so they do not switch Chinese and English.
+  "ascii_composer/good_old_caps_lock": true
+  "ascii_composer/switch_key/Caps_Lock": clear
+  "ascii_composer/switch_key/Shift_L": noop
+  "ascii_composer/switch_key/Shift_R": noop
+  "ascii_composer/switch_key/Control_L": noop
+  "ascii_composer/switch_key/Control_R": noop

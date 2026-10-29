@@ -1,0 +1,83 @@
+#!/usr/bin/env python3
+"""Turn keyd's short-press F14 into an fcitx Chinese/English toggle.
+
+niri does not deliver that F14 to fcitx, so the hotkey never fires.
+"""
+
+import glob
+import os
+import select
+import struct
+import subprocess
+import time
+
+EV_KEY = 1
+KEY_CAPSLOCK = 58
+KEY_F14 = 184
+EVENT = struct.Struct("llHHi")
+TAP = os.path.join(os.path.dirname(os.path.abspath(__file__)), "im-caps-tap")
+
+
+def find_device() -> str | None:
+    for path in glob.glob("/sys/class/input/event*"):
+        name_path = os.path.join(path, "device/name")
+        try:
+            name = open(name_path, encoding="utf-8").read().strip()
+        except OSError:
+            continue
+        if name == "keyd virtual keyboard":
+            return "/dev/input/" + os.path.basename(path)
+    return None
+
+
+def toggle() -> None:
+    subprocess.run([TAP], check=False)
+
+
+def watch(dev: str) -> None:
+    fd = os.open(dev, os.O_RDONLY | os.O_NONBLOCK)
+    poll = select.poll()
+    poll.register(fd, select.POLLIN)
+    last = 0.0
+    try:
+        while True:
+            if not poll.poll(1000):
+                if not os.path.exists(dev):
+                    return
+                continue
+            try:
+                data = os.read(fd, EVENT.size * 64)
+            except BlockingIOError:
+                continue
+            if not data:
+                return
+            for offset in range(0, len(data) - EVENT.size + 1, EVENT.size):
+                _sec, _usec, typ, code, value = EVENT.unpack_from(data, offset)
+                if typ != EV_KEY or code != KEY_F14 or value != 1:
+                    continue
+                now = time.monotonic()
+                if now - last < 0.2:
+                    continue
+                last = now
+                print(f"toggle from {dev}", flush=True)
+                toggle()
+    finally:
+        os.close(fd)
+
+
+def main() -> None:
+    while True:
+        dev = find_device()
+        if not dev:
+            time.sleep(1)
+            continue
+        print(f"watching {dev}", flush=True)
+        try:
+            watch(dev)
+        except OSError as exc:
+            print(f"read failed: {exc}", flush=True)
+        time.sleep(0.5)
+
+
+if __name__ == "__main__":
+    main()

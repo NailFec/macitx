@@ -1,0 +1,37 @@
+[Hotkey]
+# Enumerate when holding modifier of Toggle key
+EnumerateWithTriggerKeys=False
+# Temporarily Toggle Input Method
+AltTriggerKeys=
+# Enumerate Input Method Forward
+EnumerateForwardKeys=
+# Enumerate Input Method Backward
+EnumerateBackwardKeys=
+
+[Hotkey/TriggerKeys]
+0=F14
+
+[Hotkey/ActivateKeys]
+
+[Hotkey/DeactivateKeys]
+
+[Hotkey/EnumerateGroupForwardKeys]
+
+[Hotkey/EnumerateGroupBackwardKeys]
+
+[Behavior]
+# Activate input method by default
+ActiveByDefault=False
+# Reset state on Focus In
+resetStateWhenFocusIn=No
+# Share Input State
+ShareInputState=No
+# 中/英 is drawn by the classic UI next to the caret, not as a notification.
+ShowInputMethodInformation=True
+showInputMethodInformationWhenFocusIn=True
+# Show compact input method information
+CompactInputMethodInformation=True
+# Show first input method information
+ShowFirstInputMethodInformation=True
+# Default Candidates per page
+DefaultPageSize=9

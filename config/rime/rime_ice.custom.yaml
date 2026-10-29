@@ -1,0 +1,5 @@
+patch:
+  # Start in Chinese when Rime opens, so ascii mode is not a second language switch.
+  "switches/@0/reset": 0
+  # The caret badge uses the first character of the schema name.
+  "schema/name": "中·雾凇拼音"
